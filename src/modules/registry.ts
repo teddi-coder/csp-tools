@@ -14,6 +14,7 @@ export interface ToolModule {
 // Import modules lazily to avoid circular issues at the registry level.
 // Add a new module: one entry here + one component file. That's it.
 import { CreativeReview } from './creative-review';
+import { EmailHub } from './email-hub';
 import { ComingSoon } from './coming-soon';
 
 export const modules: ToolModule[] = [
@@ -35,7 +36,7 @@ export const modules: ToolModule[] = [
     id: 'email-hub',
     label: 'Email hub',
     icon: '✉️',
-    status: 'soon',
-    Component: () => ComingSoon({ label: 'Email hub' }),
+    status: 'live',
+    Component: EmailHub,
   },
 ];
