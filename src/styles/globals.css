@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hh-bg: #F1F1F1;
+  --hh-black: #1B1918;
+  --hh-blue: #7DD3FC;
+  --hh-green: #65E499;
+  --hh-yellow: #F4F7A6;
+  --hh-pink: #FFA8D1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: var(--hh-bg);
+  color: var(--hh-black);
+  font-family: 'Poppins', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Fraunces', serif;
+}
