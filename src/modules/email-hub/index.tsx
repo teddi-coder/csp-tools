@@ -3,37 +3,66 @@
 import { useCallback, useRef, useState } from 'react';
 import { buildEmailHtml } from './templates';
 
-type Layout = 'resource-hub' | 'story-first' | 'campaign-launch';
+type Layout = 'sales-early-bird' | 'sales-urgency' | 'sales-final-call' | 'thought-leadership' | 'social-proof';
 
 const layouts: { id: Layout; tag: string; tagColor: string; name: string; description: string }[] = [
   {
-    id: 'resource-hub',
-    tag: 'Newsletter',
-    tagColor: 'bg-green-100 text-green-800',
-    name: 'The Resource Hub',
-    description:
-      'Card grid layout. Hero + 4 resource cards + stats row + closing CTA. Great for monthly updates and Educator Hub announcements.',
-  },
-  {
-    id: 'story-first',
-    tag: 'Nurture',
-    tagColor: 'bg-blue-100 text-blue-800',
-    name: 'The Story-First',
-    description:
-      'Narrative flow. Dark hero + 3-step story + testimonial quote + CTA banner. Great for welcome sequences and re-engagement.',
-  },
-  {
-    id: 'campaign-launch',
-    tag: 'Campaign',
+    id: 'sales-early-bird',
+    tag: 'Sales',
     tagColor: 'bg-orange-100 text-orange-800',
-    name: 'The Campaign Launch',
+    name: 'Early Bird / Launch',
     description:
-      'Single-goal conversion layout. Pill tag + headline + one CTA + proof section + stats strip. Great for Term launches and program promos.',
+      'Split panel with product UI mockup on teal. For initial offer launch and standard sales emails.',
+  },
+  {
+    id: 'sales-urgency',
+    tag: 'Sales',
+    tagColor: 'bg-orange-100 text-orange-800',
+    name: 'Urgency / Reminder',
+    description:
+      'Split panel with countdown visual on dark. For approaching deadlines and reminder sends.',
+  },
+  {
+    id: 'sales-final-call',
+    tag: 'Sales',
+    tagColor: 'bg-red-100 text-red-800',
+    name: 'Final Call',
+    description:
+      'Full-width dark hero with yellow CTA. For last-chance deadline emails only.',
+  },
+  {
+    id: 'thought-leadership',
+    tag: 'Thought Leadership',
+    tagColor: 'bg-blue-100 text-blue-800',
+    name: 'Thought Leadership',
+    description:
+      'Dark right panel with stat or founder card. Insight-led, offer mentioned softly at end.',
+  },
+  {
+    id: 'social-proof',
+    tag: 'Social Proof',
+    tagColor: 'bg-green-100 text-green-800',
+    name: 'School Success Story',
+    description:
+      'Teal right panel with school card and outcome stats. Narrative before/after case study.',
   },
 ];
 
+const placeholders: Record<Layout, string> = {
+  'sales-early-bird':
+    'Describe the offer, deadline, and any bonus inclusions. Leave out TBC items.\n\nE.g. "10% off 2027 Cyber Safe Classroom subscription. Offer closes 18 September 2026. Bonus Planning and Success Session with Amanda (valued at $200)."',
+  'sales-urgency':
+    'Describe the offer, deadline, and any bonus inclusions. Leave out TBC items.\n\nE.g. "Only 4 weeks left. 10% Early Bird pricing closes 18 September. Include the free Planning Session bonus."',
+  'sales-final-call':
+    'Describe the offer, deadline, and any bonus inclusions. Leave out TBC items.\n\nE.g. "Final call. 10% Early Bird pricing closes tonight. After midnight, full price only. Mention free trial as a fallback."',
+  'thought-leadership':
+    'Describe the key insight, challenge, or topic. Who is speaking? What is the expert angle?\n\nE.g. "Schools dealing with group chat incidents weekly. Proactive planning vs reactive response. Term 3 is budget season. Early Bird closes 18 September."',
+  'social-proof':
+    'Name the school. Describe the before/after. What were the outcomes?\n\nE.g. "Northcross Christian School. Before: ad hoc incursions, low teacher confidence. After: embedded F-8 curriculum, 94% teacher confidence, 40% fewer incidents."',
+};
+
 export function EmailHub() {
-  const [selectedLayout, setSelectedLayout] = useState<Layout>('resource-hub');
+  const [selectedLayout, setSelectedLayout] = useState<Layout>('sales-early-bird');
   const [brief, setBrief] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -128,7 +157,7 @@ export function EmailHub() {
         <h2 className="text-lg font-bold text-hh-black font-display">Choose a layout</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {layouts.map((l) => (
           <button
             key={l.id}
@@ -161,7 +190,7 @@ export function EmailHub() {
       <textarea
         value={brief}
         onChange={(e) => setBrief(e.target.value)}
-        placeholder="Describe what this email is about. E.g. 'Term 3 launch email announcing our new AI literacy curriculum, free PD sessions, and the updated Educator Hub. Mention the early bird booking deadline of 18 July.'"
+        placeholder={placeholders[selectedLayout]}
         className="w-full min-h-[120px] p-4 border-2 border-black/10 rounded-xl text-sm text-hh-black bg-white resize-y outline-none focus:border-hh-blue transition placeholder:text-black/30 mb-1"
       />
       <p className="text-xs text-hh-black/40 mb-6">

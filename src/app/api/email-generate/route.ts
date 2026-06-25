@@ -1,88 +1,121 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const structurePrompts: Record<string, string> = {
-  'resource-hub': `Use this structure:
-1. Logo header
-2. Badge pill + headline + intro paragraph + single CTA button
-3. Section title + 4-card resource grid (2x2)
-4. Stats row (3 stats — real proof metrics)
-5. Single closing CTA button — same label as the hero CTA
-6. Footer (unsubscribe + view in browser)`,
+  'sales-early-bird': `Use this structure:
+1. Split-panel hero: white left column (overline + headline), teal right column with product UI mockup
+2. Teal strip below hero: deadline text left, yellow pill CTA right
+3. Body section: opening statement (bold), body paragraphs, offer inclusion box (teal-tinted bg, items prefixed with &#10022;), teal pill CTA button
+4. Proof quote section: grey background, teal left border, italic quote + attribution
+5. Footer: unsubscribe + view in browser`,
 
-  'story-first': `Use this structure:
-1. Logo header
-2. Opening narrative paragraph (dark hero style) + single CTA button
-3. 3-step numbered story section
-4. Testimonial quote block (real or realistic educator quote)
-5. Single CTA banner — same button label as the hero CTA
-6. Footer (unsubscribe + view in browser)`,
+  'sales-urgency': `Use this structure:
+1. Split-panel hero: white left column (overline + headline), dark (#111111) right column with large countdown number
+2. Teal strip below hero: deadline text left, yellow pill CTA right
+3. Body section: opening statement (bold), body paragraphs, offer inclusion box, teal pill CTA button
+4. Proof quote section: grey background, teal left border
+5. Footer: unsubscribe + view in browser`,
 
-  'campaign-launch': `Use this structure — this is a single-goal conversion email, NOT a feature showcase:
-1. Logo header (light treatment — do not use a full-bleed dark block)
-2. Pill tag (e.g. "Early Bird Offer")
-3. Hero headline (lead with the key benefit or scarcity, not the offer mechanics)
-4. Hero subtext (2 sentences max)
-5. Single primary CTA button — full-width on mobile
-6. ONE reason-to-believe section: either a single testimonial quote OR a short paragraph with a real proof stat. Do NOT use a 2x2 card grid here.
-7. Stats strip (3 stats — must be real proof metrics like school count, satisfaction rate, or curriculum coverage. Not restatements of the offer terms)
-8. Closing CTA button — same label as the hero CTA
-9. Footer (unsubscribe + view in browser)
+  'sales-final-call': `Use this structure -- NO split panel:
+1. Full-width dark (#111111) hero: overline, large headline (46px), subtext, YELLOW pill CTA button (the only time yellow is the primary CTA)
+2. Teal strip below hero: states exactly what is lost after deadline
+3. Body section: opening statement (bold), body paragraphs, teal pill CTA button (NOT yellow in the body)
+4. Proof quote section: grey background, teal left border
+5. Footer: unsubscribe + view in browser`,
 
-Do NOT add a 2x2 feature card grid. Do NOT add a section for any product or offer not in the brief.`,
+  'thought-leadership': `Use this structure:
+1. Split-panel hero: white left column (overline "Thought Leadership" or "A message from [name]", headline), dark right column with a stat OR founder card
+2. Teal strip below hero: topical text, yellow pill CTA
+3. Body section: opening statement (bold), body paragraphs (no hard sales push -- offer mentioned softly at end), teal pill CTA (soft action like "Book a call" or "Start your free trial")
+4. Proof quote section: grey background, teal left border
+5. Footer: unsubscribe + view in browser`,
+
+  'social-proof': `Use this structure:
+1. Split-panel hero: white left column (overline "Real School. Real Results.", headline), teal right column with school name card and 2 outcome stats
+2. Teal strip below hero: text, yellow pill CTA
+3. Body section: narrative before/after story (opening statement bold), body paragraphs with pull quote woven in, teal pill CTA
+4. Proof quote section: grey background, teal left border
+5. Footer: unsubscribe + view in browser`,
 };
 
 const jsonStructures: Record<string, string> = {
-  'resource-hub': `{
-  "badge": "short badge text e.g. Term 3 Update",
-  "headline": "main headline",
-  "subtext": "1-2 sentence supporting text",
-  "heroCta": "CTA button text",
-  "sectionTitle": "e.g. What's new this term",
-  "cards": [
-    { "title": "card title", "description": "1-2 sentence description" },
-    { "title": "card title", "description": "1-2 sentence description" },
-    { "title": "card title", "description": "1-2 sentence description" },
-    { "title": "card title", "description": "1-2 sentence description" }
-  ],
-  "stats": [
-    { "number": "e.g. 2,400+", "label": "e.g. schools reached" },
-    { "number": "e.g. 94%", "label": "e.g. educator satisfaction" },
-    { "number": "e.g. Free", "label": "e.g. for all educators" }
-  ],
-  "closingCta": "same CTA button text as heroCta"
-}`,
-  'story-first': `{
-  "headline": "main headline",
-  "subtext": "1-2 sentence supporting text",
-  "heroCta": "CTA button text",
-  "steps": [
-    { "title": "step title", "description": "1-2 sentence description" },
-    { "title": "step title", "description": "1-2 sentence description" },
-    { "title": "step title", "description": "1-2 sentence description" }
-  ],
-  "testimonial": {
-    "quote": "the testimonial text",
+  'sales-early-bird': `{
+  "overline": "short overline e.g. Early Bird Offer",
+  "headline": "main headline -- put the final line on a new line with \\n, it will render in teal accent colour. Lead with benefit or scarcity.",
+  "stripText": "teal strip text e.g. Offer closes 18 September 2026",
+  "cta": "single CTA text used everywhere e.g. Secure your 2027 program now",
+  "openingStatement": "1-2 sentence bold opening -- the hook",
+  "body": "2-3 paragraphs of body copy. Use commas and full stops, never em dashes.",
+  "inclusions": ["inclusion item 1", "inclusion item 2", "inclusion item 3"],
+  "proofQuote": {
+    "quote": "testimonial quote text",
     "attribution": "Role, School Type, State"
-  },
-  "ctaText": "1 sentence prompt",
-  "ctaButton": "same CTA button text as heroCta"
+  }
 }`,
-  'campaign-launch': `{
-  "pill": "single pill tag e.g. Early Bird Offer",
-  "headline": "main headline — lead with benefit or scarcity",
-  "subtext": "1-2 sentence supporting text",
-  "cta": "single CTA button text — used for ALL buttons in the email",
-  "proofSection": {
-    "type": "testimonial or stat",
-    "quote": "if testimonial: the quote text (omit if stat)",
-    "attribution": "if testimonial: Role, School Type, State (omit if stat)",
-    "statText": "if stat: a short paragraph with a real proof metric (omit if testimonial)"
-  },
-  "stats": [
-    { "number": "e.g. 2,400+", "label": "e.g. schools reached" },
-    { "number": "e.g. 94%", "label": "e.g. educator satisfaction" },
-    { "number": "e.g. Free", "label": "e.g. for all educators" }
-  ]
+
+  'sales-urgency': `{
+  "overline": "short overline e.g. Reminder",
+  "headline": "main headline -- final line on new \\n renders in teal",
+  "countdownNumber": "e.g. 4",
+  "countdownLabel": "e.g. weeks left",
+  "stripText": "teal strip text e.g. Deadline: 18 September 2026. Don't lose it.",
+  "cta": "single CTA text e.g. Lock in the 10% before it closes",
+  "openingStatement": "bold opening hook",
+  "body": "2-3 paragraphs. No em dashes.",
+  "inclusions": ["inclusion item 1", "inclusion item 2"],
+  "proofQuote": {
+    "quote": "testimonial quote text",
+    "attribution": "Role, School Type, State"
+  }
+}`,
+
+  'sales-final-call': `{
+  "overline": "Final Call",
+  "headline": "short, punchy headline for full-width dark hero",
+  "subtext": "1-2 sentences below the headline",
+  "heroCta": "yellow CTA in hero e.g. Book now. Closes tonight.",
+  "stripText": "what is lost after deadline e.g. After tonight, Early Bird pricing is gone",
+  "bodyCta": "teal CTA in body (can match heroCta or be softer)",
+  "openingStatement": "bold opening hook",
+  "body": "2-3 paragraphs. No em dashes.",
+  "proofQuote": {
+    "quote": "testimonial quote text",
+    "attribution": "Role, School Type, State"
+  }
+}`,
+
+  'thought-leadership': `{
+  "overline": "Thought Leadership or A message from [Name]",
+  "headline": "main headline -- final line on new \\n renders in teal",
+  "rightPanelStat": "a stat number for the dark right panel e.g. 73% (omit if using founderName)",
+  "rightPanelLabel": "stat label e.g. of incidents happen in group chats (omit if using founderName)",
+  "founderName": "name for founder card (omit if using stat)",
+  "founderRole": "role for founder card e.g. Founder, Cyber Safety Project (omit if using stat)",
+  "stripText": "teal strip text",
+  "cta": "soft CTA e.g. Start your free trial",
+  "openingStatement": "bold opening hook",
+  "body": "2-4 paragraphs. Insight-led, not sales-led. Mention offer softly at end only. No em dashes.",
+  "proofQuote": {
+    "quote": "testimonial quote text",
+    "attribution": "Role, School Type, State"
+  }
+}`,
+
+  'social-proof': `{
+  "overline": "Real School. Real Results.",
+  "headline": "main headline -- final line on new \\n renders in teal",
+  "schoolName": "school name for the right panel card",
+  "stat1": "outcome stat 1 e.g. 94%",
+  "stat1Label": "stat 1 label e.g. teacher confidence",
+  "stat2": "outcome stat 2 e.g. 40%",
+  "stat2Label": "stat 2 label e.g. fewer incidents",
+  "stripText": "teal strip text",
+  "cta": "CTA text e.g. See what your school could achieve",
+  "openingStatement": "bold opening -- narrative before/after",
+  "body": "2-4 paragraphs. Tell the school's story: before, implementation, results. No em dashes.",
+  "proofQuote": {
+    "quote": "pull quote from the school or educator",
+    "attribution": "Role, School Name"
+  }
 }`,
 };
 
@@ -114,27 +147,45 @@ export async function POST(request: NextRequest) {
 
   const systemPrompt = `You are an email content writer for Cyber Safety Project (CSP), an Australian organisation that provides cyber safety education to schools.
 
-CLIENT CONTEXT — Cyber Safety Project (CSP):
+CLIENT CONTEXT:
 - Audience: School booking coordinators, wellbeing leads, and curriculum leaders at Australian primary and secondary schools. Time-poor, budget-conscious educators.
 - Voice: Warm authority. Conversational but credible. First-person from "the CSP team". Short sentences. Use "your school" not "schools". No corporate plural.
 - Words to use: "your school", "preferred dates", "Term 1 and 2 fill fast", "lock in", "secure your spot"
 - Words to avoid: "leverage", "solutions", "exciting opportunity", "don't miss out", "world-class", "we are pleased to offer"
 - Use Australian English (organise not organize, colour not color).
-- The email platform is Transpond — all HTML must be email-safe (no CSS Grid, no Flexbox, table-based layout, inline styles only).
+- The email platform is Transpond. All HTML must be email-safe (no CSS Grid, no Flexbox, table-based layout, inline styles only).
 
-CRITICAL RULES — you must follow all of these without exception:
-- Use ONE primary CTA button label throughout the entire email. Do not introduce a second CTA label. All button instances must use identical wording.
-- Do NOT introduce any product, feature, or offer that was not explicitly mentioned in the user's brief. If the brief mentions "Early Bird discount", the email is about that and only that.
-- Do NOT generate placeholder copy. If a brief item is vague or incomplete, write concrete copy based on what IS provided. Never write "details coming soon" or any variation.
+APPROVED DESIGN SYSTEM:
+- Font: Nunito only (via Google Fonts). Fallback stack: 'Nunito', Arial, sans-serif.
+- Colours: teal #1ab5a0 (primary CTA, accents), dark teal #13917f (depth), yellow #f5c700 (ONLY for the pill CTA in the teal strip, never as body CTA), near-black #111111 (headlines, dark panels), dark grey #444444 (body copy), light grey bg #f2f2f2 or #f2faf9 (proof sections), white #ffffff (card bg).
+- Outer email background: always #e6e6e6.
+- Logo: small centred pill logo, NOT a header block.
+- Hero: split-panel with white left (overline + headline) and coloured right panel. Exception: Final Call uses full-width dark hero.
+- Teal strip: always immediately below hero. Left = small caps text. Right = yellow pill CTA.
+- Body CTA: teal (#1ab5a0) pill button, 50px border-radius. NEVER yellow in the body.
+- Proof section: grey bg, 4px teal left border, italic quote.
+
+BANNED ELEMENTS -- never include any of these:
+- No stats bars spanning full width
+- No 2x2 card grids or multi-column grids
+- No full-bleed teal sections as hero backgrounds (teal is a strip/panel, not a full hero)
+- No video placeholder blocks (reference video as a text link if needed)
+- No em dashes anywhere. Use commas, full stops, or restructure the sentence.
+- No placeholder/TBC copy. Write concrete copy from what the brief provides.
+
+CRITICAL RULES:
+- Use ONE primary CTA button label throughout. All button instances must use identical wording.
+- Do NOT introduce any product, feature, or offer not explicitly in the brief.
+- Do NOT generate placeholder copy. Never write "details coming soon" or any variation.
 - Do NOT add secondary CTAs, trial offers, or product cross-sells unless they appear verbatim in the brief.
 - Do NOT invent new offers, discounts, or programs not in the brief.
 
-LAYOUT STRUCTURE — you must follow this structure exactly:
+LAYOUT STRUCTURE:
 ${structurePrompts[layout]}
 
-Based on the user's brief, generate the email content as a JSON object. Respond with ONLY valid JSON, no markdown backticks, no preamble.
+Generate the email content as a JSON object. Respond with ONLY valid JSON, no markdown backticks, no preamble.
 
-The JSON structure for this layout:
+JSON structure:
 ${jsonStructures[layout]}`;
 
   try {
