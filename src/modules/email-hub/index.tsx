@@ -28,7 +28,7 @@ const layouts: { id: Layout; tag: string; tagColor: string; name: string; descri
     tagColor: 'bg-orange-100 text-orange-800',
     name: 'The Campaign Launch',
     description:
-      'High-impact launch format. Pill tags + dual CTAs + feature grid + resource list. Great for Term launches and program promos.',
+      'Single-goal conversion layout. Pill tag + headline + one CTA + proof section + stats strip. Great for Term launches and program promos.',
   },
 ];
 
