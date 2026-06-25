@@ -47,6 +47,31 @@ export function EmailHub() {
       return;
     }
 
+    const cleanedBrief = brief
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .filter((line) => {
+        const lower = line.toLowerCase();
+        return (
+          !lower.includes('(tbc)') &&
+          !lower.includes('tbc)') &&
+          !lower.match(/^\s*tbc\s*$/) &&
+          !lower.includes('coming soon') &&
+          !lower.includes('to be confirmed') &&
+          !lower.includes('to be decided') &&
+          !lower.includes('placeholder')
+        );
+      })
+      .join('\n');
+
+    if (cleanedBrief.replace(/\W/g, '').length < 20) {
+      setError(
+        'Your brief needs a bit more detail before we can generate. Remove any TBC items and describe the main offer or message.'
+      );
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -54,7 +79,7 @@ export function EmailHub() {
       const resp = await fetch('/api/email-generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brief: brief.trim(), layout: selectedLayout }),
+        body: JSON.stringify({ brief: cleanedBrief, layout: selectedLayout }),
       });
 
       if (!resp.ok) {

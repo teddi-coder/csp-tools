@@ -48,33 +48,30 @@ export function buildStoryFirst(c: any): string {
 }
 
 export function buildCampaignLaunch(c: any): string {
-  const pills = (c.pills || [])
+  const pill = c.pill || (c.pills ? c.pills[0] : '');
+  const cta = c.cta || c.primaryCta || 'Learn more';
+
+  let proofHtml = '';
+  if (c.proofSection) {
+    if (c.proofSection.type === 'testimonial' && c.proofSection.quote) {
+      proofHtml = `<tr><td style="background:#F0F4FA;border-left:3px solid #4FC9A4;padding:16px 18px;border-radius:0 8px 8px 0"><p style="margin:0 0 6px;font-size:14px;color:#3D4761;line-height:1.6;font-style:italic">&ldquo;${esc(c.proofSection.quote)}&rdquo;</p><p style="margin:0;font-size:12px;color:#9AA3B5">&mdash; ${esc(c.proofSection.attribution)}</p></td></tr>`;
+    } else if (c.proofSection.statText) {
+      proofHtml = `<tr><td style="background:#F0F4FA;border-left:3px solid #4FC9A4;padding:16px 18px;border-radius:0 8px 8px 0"><p style="margin:0;font-size:14px;color:#3D4761;line-height:1.6">${esc(c.proofSection.statText)}</p></td></tr>`;
+    }
+  }
+
+  const stats = (c.stats || [])
     .map(
-      (p: string) =>
-        `<span style="display:inline-block;background:rgba(79,201,164,.15);color:#4FC9A4;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid rgba(79,201,164,.4);margin:3px">${esc(p)}</span>`
-    )
-    .join(' ');
-  const features = (c.features || [])
-    .map((f: any) => {
-      const tc =
-        f.tagColor === 'blue'
-          ? 'background:#E6EEF9;color:#1A2B5C'
-          : 'background:#E8F5EF;color:#0D6B4E';
-      return `<td width="50%" style="padding:6px;vertical-align:top"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="background:#F8FAFC;border:1px solid #DDE3EE;border-radius:8px;padding:18px"><span style="display:inline-block;${tc};font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;margin-bottom:8px">${esc(f.tag)}</span><p style="margin:8px 0 6px;font-size:14px;font-weight:700;color:#1A2B5C">${esc(f.title)}</p><p style="margin:0;font-size:13px;color:#6B7589;line-height:1.55">${esc(f.description)}</p></td></tr></table></td>`;
-    })
-    .join('');
-  const resources = (c.resources || [])
-    .map(
-      (r: any) =>
-        `<tr><td style="padding:12px 0;border-bottom:1px solid #DDE3EE"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="width:40px;vertical-align:top"><div style="width:36px;height:36px;background:#F0F4FA;border-radius:6px;text-align:center;line-height:36px;font-size:16px">&#128196;</div></td><td style="padding-left:12px"><p style="margin:0 0 2px;font-size:13px;font-weight:700;color:#1A2B5C">${esc(r.title)}</p><p style="margin:0;font-size:11px;color:#9AA3B5">${esc(r.subtitle)}</p></td></tr></table></td></tr>`
+      (s: any) =>
+        `<td width="33%" style="text-align:center;background:#F0F4FA;border-radius:6px;padding:14px 8px"><p style="margin:0;font-size:22px;font-weight:700;color:#1A2B5C">${esc(s.number)}</p><p style="margin:4px 0 0;font-size:11px;color:#6B7589">${esc(s.label)}</p></td>`
     )
     .join('');
 
   return wrapper(`
 <tr><td style="background:#fff;border-bottom:1px solid #DDE3EE;padding:14px 24px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td><p style="margin:0;font-size:15px;font-weight:700;color:#1A2B5C">Cyber Safety <span style="color:#4FC9A4">Project</span></p></td><td style="text-align:right"><a href="#" style="font-size:12px;color:#6B7589;text-decoration:none;margin-left:14px">Educator Hub</a><a href="#" style="font-size:12px;color:#6B7589;text-decoration:none;margin-left:14px">Programs</a></td></tr></table></td></tr>
-<tr><td style="background:linear-gradient(135deg,#1A2B5C 0%,#223880 100%);padding:36px 24px;text-align:center"><div style="margin-bottom:18px">${pills}</div><h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#fff;line-height:1.35">${esc(c.headline)}</h1><p style="margin:0 0 24px;font-size:14px;color:#A8C0DB;line-height:1.6">${esc(c.subtext)}</p><a href="#" style="display:inline-block;background:#4FC9A4;color:#0D3B2A;font-size:13px;font-weight:600;padding:12px 22px;border-radius:6px;text-decoration:none;margin-right:8px">${esc(c.primaryCta)}</a><a href="#" style="display:inline-block;background:transparent;color:#fff;font-size:13px;font-weight:600;padding:11px 22px;border-radius:6px;text-decoration:none;border:1px solid rgba(255,255,255,.4)">${esc(c.secondaryCta)}</a></td></tr>
-<tr><td style="background:#fff;padding:24px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${features}</tr></table><p style="margin:24px 0 14px;font-size:14px;font-weight:700;color:#1A2B5C">${esc(c.resourcesTitle)}</p><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${resources}</table></td></tr>
-<tr><td style="background:#1A2B5C;padding:22px 24px;text-align:center"><p style="margin:0;font-size:12px;color:#6B8AB5;line-height:1.7">Cyber Safety Project &middot; Trusted by 2,400+ Australian schools<br><a href="#" style="color:#4FC9A4;text-decoration:none">Unsubscribe</a> &middot; <a href="#" style="color:#4FC9A4;text-decoration:none">View in browser</a></p></td></tr>`);
+<tr><td style="background:linear-gradient(135deg,#1A2B5C 0%,#223880 100%);padding:36px 24px;text-align:center"><div style="margin-bottom:18px"><span style="display:inline-block;background:rgba(79,201,164,.15);color:#4FC9A4;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;border:1px solid rgba(79,201,164,.4)">${esc(pill)}</span></div><h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#fff;line-height:1.35">${esc(c.headline)}</h1><p style="margin:0 0 24px;font-size:14px;color:#A8C0DB;line-height:1.6">${esc(c.subtext)}</p><a href="#" style="display:inline-block;background:#4FC9A4;color:#0D3B2A;font-size:14px;font-weight:600;padding:12px 28px;border-radius:6px;text-decoration:none">${esc(cta)}</a></td></tr>
+<tr><td style="background:#fff;padding:24px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${proofHtml}</table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px"><tr>${stats}</tr></table><div style="text-align:center;margin-top:24px"><a href="#" style="display:inline-block;background:#1A2B5C;color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:6px;text-decoration:none">${esc(cta)}</a></div></td></tr>
+<tr><td style="background:#F8FAFC;border-top:1px solid #DDE3EE;padding:18px 24px;text-align:center"><p style="margin:0;font-size:12px;color:#9AA3B5;line-height:1.6">Cyber Safety Project &middot; <a href="#" style="color:#1A2B5C;text-decoration:none">Unsubscribe</a> &middot; <a href="#" style="color:#1A2B5C;text-decoration:none">View in browser</a></p></td></tr>`);
 }
 
 export function buildEmailHtml(layout: string, content: any): string {
