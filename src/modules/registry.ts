@@ -15,6 +15,7 @@ export interface ToolModule {
 // Add a new module: one entry here + one component file. That's it.
 import { CreativeReview } from './creative-review';
 import { EmailHub } from './email-hub';
+import { EobBrief } from './eob-brief';
 import { ComingSoon } from './coming-soon';
 
 export const modules: ToolModule[] = [
@@ -24,6 +25,13 @@ export const modules: ToolModule[] = [
     icon: '🎨',
     status: 'live',
     Component: CreativeReview,
+  },
+  {
+    id: 'eob-brief',
+    label: 'Campaign brief',
+    icon: '📋',
+    status: 'live',
+    Component: EobBrief,
   },
   {
     id: 'campaign-performance',
