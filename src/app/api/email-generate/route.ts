@@ -1,12 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const layoutDescriptions: Record<string, string> = {
-  'resource-hub':
-    'The Resource Hub layout: a card-grid newsletter format with a hero section (badge, headline, subtext, CTA), a 4-card grid of resource highlights, a 3-column stats row, and a closing CTA. Best for monthly updates and Educator Hub announcements.',
-  'story-first':
-    'The Story-First layout: a narrative flow with a dark hero (headline, subtext, CTA), a numbered 3-step story section, a testimonial pull-quote block, and a dark CTA banner. Best for welcome sequences, re-engagement, and cold nurture.',
-  'campaign-launch':
-    'The Campaign Launch layout: a high-impact format with pill tags in the hero, dual CTA buttons (primary + ghost), a 2-column feature grid with category tags, and a resource list with icons. Best for Term launches and program announcements.',
+const structurePrompts: Record<string, string> = {
+  'resource-hub': `Use this structure:
+1. Logo header
+2. Badge pill + headline + intro paragraph + single CTA button
+3. Section title + 4-card resource grid (2x2)
+4. Stats row (3 stats — real proof metrics)
+5. Single closing CTA button — same label as the hero CTA
+6. Footer (unsubscribe + view in browser)`,
+
+  'story-first': `Use this structure:
+1. Logo header
+2. Opening narrative paragraph (dark hero style) + single CTA button
+3. 3-step numbered story section
+4. Testimonial quote block (real or realistic educator quote)
+5. Single CTA banner — same button label as the hero CTA
+6. Footer (unsubscribe + view in browser)`,
+
+  'campaign-launch': `Use this structure — this is a single-goal conversion email, NOT a feature showcase:
+1. Logo header (light treatment — do not use a full-bleed dark block)
+2. Pill tag (e.g. "Early Bird Offer")
+3. Hero headline (lead with the key benefit or scarcity, not the offer mechanics)
+4. Hero subtext (2 sentences max)
+5. Single primary CTA button — full-width on mobile
+6. ONE reason-to-believe section: either a single testimonial quote OR a short paragraph with a real proof stat. Do NOT use a 2x2 card grid here.
+7. Stats strip (3 stats — must be real proof metrics like school count, satisfaction rate, or curriculum coverage. Not restatements of the offer terms)
+8. Closing CTA button — same label as the hero CTA
+9. Footer (unsubscribe + view in browser)
+
+Do NOT add a 2x2 feature card grid. Do NOT add a section for any product or offer not in the brief.`,
 };
 
 const jsonStructures: Record<string, string> = {
@@ -27,7 +49,7 @@ const jsonStructures: Record<string, string> = {
     { "number": "e.g. 94%", "label": "e.g. educator satisfaction" },
     { "number": "e.g. Free", "label": "e.g. for all educators" }
   ],
-  "closingCta": "CTA button text"
+  "closingCta": "same CTA button text as heroCta"
 }`,
   'story-first': `{
   "headline": "main headline",
@@ -43,23 +65,23 @@ const jsonStructures: Record<string, string> = {
     "attribution": "Role, School Type, State"
   },
   "ctaText": "1 sentence prompt",
-  "ctaButton": "CTA button text"
+  "ctaButton": "same CTA button text as heroCta"
 }`,
   'campaign-launch': `{
-  "pills": ["pill 1", "pill 2", "pill 3"],
-  "headline": "main headline",
+  "pill": "single pill tag e.g. Early Bird Offer",
+  "headline": "main headline — lead with benefit or scarcity",
   "subtext": "1-2 sentence supporting text",
-  "primaryCta": "primary CTA button text",
-  "secondaryCta": "secondary CTA button text",
-  "features": [
-    { "tag": "e.g. New this term", "tagColor": "green or blue", "title": "feature title", "description": "1-2 sentence description" },
-    { "tag": "e.g. Updated", "tagColor": "green or blue", "title": "feature title", "description": "1-2 sentence description" }
-  ],
-  "resourcesTitle": "e.g. Free resources for Term 3",
-  "resources": [
-    { "title": "resource name", "subtitle": "who it's for" },
-    { "title": "resource name", "subtitle": "who it's for" },
-    { "title": "resource name", "subtitle": "who it's for" }
+  "cta": "single CTA button text — used for ALL buttons in the email",
+  "proofSection": {
+    "type": "testimonial or stat",
+    "quote": "if testimonial: the quote text (omit if stat)",
+    "attribution": "if testimonial: Role, School Type, State (omit if stat)",
+    "statText": "if stat: a short paragraph with a real proof metric (omit if testimonial)"
+  },
+  "stats": [
+    { "number": "e.g. 2,400+", "label": "e.g. schools reached" },
+    { "number": "e.g. 94%", "label": "e.g. educator satisfaction" },
+    { "number": "e.g. Free", "label": "e.g. for all educators" }
   ]
 }`,
 };
@@ -83,26 +105,36 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!layoutDescriptions[layout]) {
+  if (!structurePrompts[layout]) {
     return NextResponse.json(
       { error: 'Invalid layout' },
       { status: 400 }
     );
   }
 
-  const systemPrompt = `You are an email content writer for Cyber Safety Project (CSP), an Australian organisation that provides cyber safety education to schools. Your audience is educators — teachers, ICT coordinators, wellbeing leads, and school leaders.
+  const systemPrompt = `You are an email content writer for Cyber Safety Project (CSP), an Australian organisation that provides cyber safety education to schools.
 
-VOICE: Approachable expert, not corporate. Speak directly to educators. Use Australian English (organise not organize, colour not color). Use specific numbers and examples. Lead with the problem, then the practical fix.
+CLIENT CONTEXT — Cyber Safety Project (CSP):
+- Audience: School booking coordinators, wellbeing leads, and curriculum leaders at Australian primary and secondary schools. Time-poor, budget-conscious educators.
+- Voice: Warm authority. Conversational but credible. First-person from "the CSP team". Short sentences. Use "your school" not "schools". No corporate plural.
+- Words to use: "your school", "preferred dates", "Term 1 and 2 fill fast", "lock in", "secure your spot"
+- Words to avoid: "leverage", "solutions", "exciting opportunity", "don't miss out", "world-class", "we are pleased to offer"
+- Use Australian English (organise not organize, colour not color).
+- The email platform is Transpond — all HTML must be email-safe (no CSS Grid, no Flexbox, table-based layout, inline styles only).
 
-NEVER reference parent audiences — content targets educators only.
+CRITICAL RULES — you must follow all of these without exception:
+- Use ONE primary CTA button label throughout the entire email. Do not introduce a second CTA label. All button instances must use identical wording.
+- Do NOT introduce any product, feature, or offer that was not explicitly mentioned in the user's brief. If the brief mentions "Early Bird discount", the email is about that and only that.
+- Do NOT generate placeholder copy. If a brief item is vague or incomplete, write concrete copy based on what IS provided. Never write "details coming soon" or any variation.
+- Do NOT add secondary CTAs, trial offers, or product cross-sells unless they appear verbatim in the brief.
+- Do NOT invent new offers, discounts, or programs not in the brief.
 
-You are writing email content for the "${layout}" layout: ${layoutDescriptions[layout]}
+LAYOUT STRUCTURE — you must follow this structure exactly:
+${structurePrompts[layout]}
 
 Based on the user's brief, generate the email content as a JSON object. Respond with ONLY valid JSON, no markdown backticks, no preamble.
 
-The JSON structure depends on the layout:
-
-For "${layout}":
+The JSON structure for this layout:
 ${jsonStructures[layout]}`;
 
   try {
