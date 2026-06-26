@@ -119,14 +119,26 @@ export function EobBrief() {
                   alt={ad.name}
                   style={{
                     width: '100%',
-                    height: 'auto',
+                    height: '300px',
+                    objectFit: 'cover',
+                    objectPosition: 'top',
                     display: 'block',
                   }}
                 />
               ) : (
-                <div
-                  dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
-                />
+                <div style={{
+                  height: '300px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
+                    style={{
+                      height: '100%',
+                      overflow: 'hidden',
+                    }}
+                  />
+                </div>
               )}
 
               {/* Metadata tags */}
