@@ -112,20 +112,21 @@ export function EobBrief() {
               style={{ breakInside: 'avoid', marginBottom: '16px', display: 'inline-block', width: '100%' }}
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
-              {/* Creative — all cards now use imageUrl */}
+              {/* Creative */}
               <div style={{
                 width: '100%',
-                height: '300px',
-                overflow: 'hidden',
+                background: '#1b3a6b',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '16px',
               }}>
                 <img
                   src={ad.imageUrl || ''}
                   alt={ad.name}
                   style={{
                     width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'top',
+                    height: 'auto',
                     display: 'block',
                   }}
                 />
