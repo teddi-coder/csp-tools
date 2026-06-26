@@ -99,7 +99,7 @@ export function EobBrief() {
         Review each ad concept below. Approve individually or request changes with a note.
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style={{ columns: 2, columnGap: '16px' }}>
         {ads.map((ad) => {
           const fb = feedback[ad.id];
           const status: Status = fb?.status ?? 'pending';
@@ -109,49 +109,25 @@ export function EobBrief() {
           return (
             <div
               key={ad.id}
+              style={{ breakInside: 'avoid', marginBottom: '16px', display: 'inline-block', width: '100%' }}
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
               {/* Creative */}
-              <div style={{
-                width: '100%',
-                height: '400px',
-                overflow: 'hidden',
-                background: '#1b3a6b',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                {ad.imageUrl ? (
-                  <img
-                    src={ad.imageUrl}
-                    alt={ad.name}
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: '400px',
-                      width: 'auto',
-                      height: 'auto',
-                      objectFit: 'contain',
-                      display: 'block',
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '400px',
-                      height: '600px',
-                      transform: 'scale(0.667)',
-                      transformOrigin: 'top left',
-                      pointerEvents: 'none',
-                      overflow: 'hidden',
-                    }}
-                    dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
-                  />
-                )}
-              </div>
+              {ad.imageUrl ? (
+                <img
+                  src={ad.imageUrl}
+                  alt={ad.name}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                  }}
+                />
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
+                />
+              )}
 
               {/* Metadata tags */}
               <div className="px-4 pt-3 pb-2 border-t border-black/5">
