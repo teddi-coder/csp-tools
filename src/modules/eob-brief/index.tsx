@@ -114,17 +114,23 @@ export function EobBrief() {
             >
               {/* Creative */}
               {ad.imageUrl ? (
-                <img
-                  src={ad.imageUrl}
-                  alt={ad.name}
-                  style={{
-                    width: '100%',
-                    height: '300px',
-                    objectFit: 'cover',
-                    objectPosition: 'top',
-                    display: 'block',
-                  }}
-                />
+                <div style={{
+                  height: '300px',
+                  overflow: 'hidden',
+                  width: '100%',
+                }}>
+                  <img
+                    src={ad.imageUrl}
+                    alt={ad.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'top',
+                      display: 'block',
+                    }}
+                  />
+                </div>
               ) : (
                 <div style={{
                   height: '300px',
