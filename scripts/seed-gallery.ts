@@ -66,7 +66,7 @@ async function main() {
     }
   }
 
-  const seedsDir = join(process.cwd(), 'seeds');
+  const seedsDir = join(process.cwd(), 'seeds', 'emails');
   let seeded = 0;
 
   for (const email of emails) {
