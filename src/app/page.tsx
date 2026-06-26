@@ -1,12 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { modules } from '@/modules/registry';
 
-export default function Home() {
-  const liveModules = modules.filter((m) => m.status === 'live');
-  const [activeId, setActiveId] = useState(liveModules[0]?.id ?? '');
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const activeId = searchParams.get('tab') || 'creative-review';
   const active = modules.find((m) => m.id === activeId);
+
+  const setActiveTab = (tab: string) => {
+    router.push(`/?tab=${tab}`, { scroll: false });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -26,7 +32,7 @@ export default function Home() {
           return (
             <button
               key={m.id}
-              onClick={() => !isSoon && setActiveId(m.id)}
+              onClick={() => !isSoon && setActiveTab(m.id)}
               disabled={isSoon}
               className={`
                 flex items-center gap-1.5 px-4 py-3 text-sm font-body font-medium whitespace-nowrap transition
@@ -55,5 +61,13 @@ export default function Home() {
         Hedgehog Marketing &middot; Cyber Safety Project
       </footer>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
   );
 }

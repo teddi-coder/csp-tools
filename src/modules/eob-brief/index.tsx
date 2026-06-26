@@ -112,20 +112,17 @@ export function EobBrief() {
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
               {/* Creative */}
-              <div
-                className="overflow-hidden flex items-center justify-center"
-                style={{ height: 280, background: '#f4f4f4' }}
-              >
+              <div style={{ width: '100%', background: '#f4f4f4' }}>
                 {ad.imageUrl ? (
                   <img
                     src={ad.imageUrl}
                     alt={ad.name}
                     className="block"
-                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                    style={{ width: '100%', height: 'auto' }}
                   />
                 ) : (
                   <div
-                    className="flex items-center justify-center p-4 h-full w-full bg-hh-bg overflow-hidden"
+                    className="flex items-center justify-center p-4 bg-hh-bg"
                     dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
                   />
                 )}
