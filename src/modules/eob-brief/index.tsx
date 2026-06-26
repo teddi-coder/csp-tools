@@ -119,7 +119,9 @@ export function EobBrief() {
                   alt={ad.name}
                   style={{
                     width: '100%',
-                    height: 'auto',
+                    height: '300px',
+                    objectFit: 'cover',
+                    objectPosition: 'top',
                     display: 'block',
                   }}
                 />
