@@ -120,6 +120,9 @@ export function EobBrief() {
                   style={{
                     width: '100%',
                     height: 'auto',
+                    maxHeight: '500px',
+                    objectFit: 'cover',
+                    objectPosition: 'top',
                     display: 'block',
                   }}
                 />
