@@ -111,11 +111,22 @@ export function EobBrief() {
               key={ad.id}
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
-              {/* Creative mockup */}
-              <div
-                className="flex items-center justify-center p-4 bg-hh-bg overflow-auto"
-                dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
-              />
+              {/* Creative */}
+              {ad.imageUrl ? (
+                <div className="bg-hh-bg">
+                  <img
+                    src={ad.imageUrl}
+                    alt={ad.name}
+                    className="w-full block"
+                    style={{ aspectRatio: '4/5', objectFit: 'cover' }}
+                  />
+                </div>
+              ) : (
+                <div
+                  className="flex items-center justify-center p-4 bg-hh-bg overflow-auto"
+                  dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
+                />
+              )}
 
               {/* Metadata tags */}
               <div className="px-4 pt-3 pb-2 border-t border-black/5">
