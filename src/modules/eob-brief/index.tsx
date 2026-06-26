@@ -113,33 +113,24 @@ export function EobBrief() {
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
               {/* Creative */}
-              {ad.imageUrl ? (
+              <div style={{
+                width: '100%',
+                background: '#1b3a6b',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '16px',
+              }}>
                 <img
-                  src={ad.imageUrl}
+                  src={ad.imageUrl || ''}
                   alt={ad.name}
                   style={{
                     width: '100%',
-                    height: '300px',
-                    objectFit: 'cover',
-                    objectPosition: 'top',
+                    height: 'auto',
                     display: 'block',
                   }}
                 />
-              ) : (
-                <div style={{
-                  height: '300px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                }}>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
-                    style={{
-                      height: '100%',
-                      overflow: 'hidden',
-                    }}
-                  />
-                </div>
-              )}
+              </div>
 
               {/* Metadata tags */}
               <div className="px-4 pt-3 pb-2 border-t border-black/5">
