@@ -16,6 +16,7 @@ export interface ToolModule {
 import { CreativeReview } from './creative-review';
 import { EmailHub } from './email-hub';
 import { EobBrief } from './eob-brief';
+import { CampaignReview } from './campaign-review';
 import { ComingSoon } from './coming-soon';
 
 export const modules: ToolModule[] = [
@@ -46,5 +47,12 @@ export const modules: ToolModule[] = [
     icon: '✉️',
     status: 'live',
     Component: EmailHub,
+  },
+  {
+    id: 'campaign-review',
+    label: 'Campaign review',
+    icon: '📬',
+    status: 'live',
+    Component: CampaignReview,
   },
 ];

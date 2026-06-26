@@ -68,6 +68,10 @@ export function EmailHub() {
   const [error, setError] = useState('');
   const [generatedHtml, setGeneratedHtml] = useState('');
   const [toast, setToast] = useState(false);
+  const [showSaveForm, setShowSaveForm] = useState(false);
+  const [saveName, setSaveName] = useState('');
+  const [saveSubject, setSaveSubject] = useState('');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const generate = useCallback(async () => {
@@ -146,6 +150,27 @@ export function EmailHub() {
       setTimeout(() => setToast(false), 2500);
     });
   }, [generatedHtml]);
+
+  const saveToGallery = useCallback(async () => {
+    if (!saveName.trim() || !generatedHtml) return;
+    setSaveStatus('saving');
+    try {
+      const resp = await fetch('/api/gallery/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: saveName,
+          subject: saveSubject,
+          layout: selectedLayout,
+          html: generatedHtml,
+        }),
+      });
+      if (!resp.ok) throw new Error('Save failed');
+      setSaveStatus('saved');
+    } catch {
+      setSaveStatus('error');
+    }
+  }, [saveName, saveSubject, selectedLayout, generatedHtml]);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-8 font-body">
@@ -249,8 +274,77 @@ export function EmailHub() {
               >
                 Regenerate
               </button>
+              <button
+                onClick={() => {
+                  setShowSaveForm(true);
+                  setSaveStatus('idle');
+                  setSaveName('');
+                  setSaveSubject('');
+                }}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-hh-blue text-white hover:bg-hh-blue/80 transition"
+              >
+                Save to Gallery
+              </button>
             </div>
           </div>
+
+          {/* Save to Gallery form */}
+          {showSaveForm && saveStatus !== 'saved' && (
+            <div className="bg-white border-2 border-hh-blue/30 rounded-xl p-5 mb-4 max-w-[640px] mx-auto">
+              <p className="text-sm font-bold text-hh-black mb-3">Save to Campaign Review</p>
+              <input
+                type="text"
+                value={saveName}
+                onChange={(e) => setSaveName(e.target.value)}
+                placeholder="e.g. Email 1 — Early Bird Launch"
+                className="w-full p-3 border-2 border-black/10 rounded-lg text-sm text-hh-black bg-white outline-none focus:border-hh-blue transition placeholder:text-black/30 mb-2"
+              />
+              <input
+                type="text"
+                value={saveSubject}
+                onChange={(e) => setSaveSubject(e.target.value)}
+                placeholder="e.g. Secure your 2027 dates (optional)"
+                className="w-full p-3 border-2 border-black/10 rounded-lg text-sm text-hh-black bg-white outline-none focus:border-hh-blue transition placeholder:text-black/30 mb-3"
+              />
+              {saveStatus === 'error' && (
+                <p className="text-xs text-red-600 mb-2">Failed to save. Please try again.</p>
+              )}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={saveToGallery}
+                  disabled={!saveName.trim() || saveStatus === 'saving'}
+                  className="px-5 py-2 rounded-lg text-sm font-semibold bg-hh-black text-white hover:bg-hh-black/80 transition disabled:opacity-40"
+                >
+                  {saveStatus === 'saving' ? 'Saving...' : 'Save'}
+                </button>
+                <button
+                  onClick={() => setShowSaveForm(false)}
+                  className="text-sm text-hh-black/50 hover:text-hh-black transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Save confirmation */}
+          {saveStatus === 'saved' && (
+            <div className="bg-[#e8f8f2] border border-[#1ab5a0] rounded-xl p-4 mb-4 max-w-[640px] mx-auto text-sm text-[#1ab5a0] font-medium">
+              Saved to Campaign Review.{' '}
+              <button
+                onClick={() => {
+                  const btns = document.querySelectorAll('nav button');
+                  const crBtn = Array.from(btns).find((b) =>
+                    b.textContent?.includes('Campaign review')
+                  ) as HTMLButtonElement | undefined;
+                  crBtn?.click();
+                }}
+                className="underline font-semibold hover:no-underline"
+              >
+                Go to Campaign Review
+              </button>
+            </div>
+          )}
 
           <div className="bg-white border-2 border-black/10 rounded-xl overflow-hidden max-w-[640px] mx-auto">
             <iframe
