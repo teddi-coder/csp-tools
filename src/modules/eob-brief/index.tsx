@@ -126,9 +126,19 @@ export function EobBrief() {
                   }}
                 />
               ) : (
-                <div
-                  dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
-                />
+                <div style={{
+                  height: '300px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
+                    style={{
+                      height: '100%',
+                      overflow: 'hidden',
+                    }}
+                  />
+                </div>
               )}
 
               {/* Metadata tags */}
