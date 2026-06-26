@@ -127,6 +127,9 @@ export function EobBrief() {
                   style={{
                     width: '100%',
                     height: 'auto',
+                    maxHeight: '350px',
+                    objectFit: 'contain',
+                    objectPosition: 'top',
                     display: 'block',
                   }}
                 />
