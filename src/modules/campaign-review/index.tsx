@@ -53,11 +53,19 @@ export function CampaignReview() {
 
   useEffect(() => {
     if (!selected || !iframeRef.current) return;
-    const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+    const iframe = iframeRef.current;
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!doc) return;
     doc.open();
     doc.write(selected.html);
     doc.close();
+    const resize = () => {
+      const h = doc.documentElement?.scrollHeight || doc.body?.scrollHeight || 800;
+      iframe.style.height = h + 'px';
+    };
+    iframe.addEventListener('load', resize);
+    setTimeout(resize, 100);
+    return () => iframe.removeEventListener('load', resize);
   }, [selected]);
 
   const updateStatus = useCallback(
@@ -275,7 +283,7 @@ export function CampaignReview() {
                     ref={iframeRef}
                     title="Email preview"
                     className="w-full border-none"
-                    style={{ minHeight: 800, pointerEvents: 'none' }}
+                    style={{ pointerEvents: 'none' }}
                   />
                 </div>
               </div>
