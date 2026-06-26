@@ -113,17 +113,18 @@ export function EobBrief() {
             >
               {/* Creative */}
               {ad.imageUrl ? (
-                <div className="bg-hh-bg">
+                <div className="bg-hh-bg overflow-hidden" style={{ height: 320 }}>
                   <img
                     src={ad.imageUrl}
                     alt={ad.name}
-                    className="w-full block"
-                    style={{ aspectRatio: '4/5', objectFit: 'cover' }}
+                    className="w-full h-full block"
+                    style={{ objectFit: 'cover' }}
                   />
                 </div>
               ) : (
                 <div
-                  className="flex items-center justify-center p-4 bg-hh-bg overflow-auto"
+                  className="flex items-center justify-center p-4 bg-hh-bg overflow-hidden"
+                  style={{ height: 320 }}
                   dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
                 />
               )}
