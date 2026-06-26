@@ -112,46 +112,44 @@ export function EobBrief() {
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
               {/* Creative */}
-              <div style={{
-                width: '100%',
-                height: '400px',
-                overflow: 'hidden',
-                background: '#1b3a6b',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                {ad.imageUrl ? (
+              {ad.imageUrl ? (
+                <div style={{
+                  width: '100%',
+                  height: '400px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
                   <img
                     src={ad.imageUrl}
                     alt={ad.name}
                     style={{
-                      maxWidth: '100%',
-                      maxHeight: '400px',
-                      width: 'auto',
-                      height: 'auto',
-                      objectFit: 'contain',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'top',
                       display: 'block',
                     }}
                   />
-                ) : (
+                </div>
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '400px',
+                  overflow: 'hidden',
+                  background: '#1b3a6b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                   <div
                     style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '400px',
-                      height: '600px',
-                      transform: 'scale(0.667)',
-                      transformOrigin: 'top left',
-                      pointerEvents: 'none',
-                      overflow: 'hidden',
+                      transform: 'scale(1.4)',
+                      transformOrigin: 'center center',
                     }}
                     dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
                   />
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Metadata tags */}
               <div className="px-4 pt-3 pb-2 border-t border-black/5">
