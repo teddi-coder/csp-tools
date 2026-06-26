@@ -99,7 +99,7 @@ export function EobBrief() {
         Review each ad concept below. Approve individually or request changes with a note.
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div style={{ columns: 2, columnGap: '16px' }}>
         {ads.map((ad) => {
           const fb = feedback[ad.id];
           const status: Status = fb?.status ?? 'pending';
@@ -109,46 +109,24 @@ export function EobBrief() {
           return (
             <div
               key={ad.id}
+              style={{ breakInside: 'avoid', marginBottom: '16px', display: 'inline-block', width: '100%' }}
               className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden flex flex-col"
             >
               {/* Creative */}
               {ad.imageUrl ? (
-                <div style={{
-                  width: '100%',
-                  height: '400px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                }}>
-                  <img
-                    src={ad.imageUrl}
-                    alt={ad.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      objectPosition: 'top',
-                      display: 'block',
-                    }}
-                  />
-                </div>
+                <img
+                  src={ad.imageUrl}
+                  alt={ad.name}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                  }}
+                />
               ) : (
-                <div style={{
-                  width: '100%',
-                  height: '400px',
-                  overflow: 'hidden',
-                  background: '#1b3a6b',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                  <div
-                    style={{
-                      transform: 'scale(1.4)',
-                      transformOrigin: 'center center',
-                    }}
-                    dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
-                  />
-                </div>
+                <div
+                  dangerouslySetInnerHTML={{ __html: ad.mockupHtml }}
+                />
               )}
 
               {/* Metadata tags */}

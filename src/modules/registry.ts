@@ -48,6 +48,7 @@ export const modules: ToolModule[] = [
     status: 'live',
     Component: EmailHub,
   },
+  // DO NOT MODIFY -- Campaign Brief changes have broken this multiple times
   {
     id: 'campaign-review',
     label: 'Campaign review',
